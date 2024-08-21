@@ -1,42 +1,51 @@
 package generics; 
 
-public class Arraylist<T> {
-    private T[] list;
-    private int size = 0;
+import java.lang.IndexOutOfBoundsException;
+
+public class Arraylist<E> {
+    private E[] list;
+    private int size = 2;
     private int length = 0;
 
     Arraylist() {
-        this.list = new T[2];
-        this.size = 2;
+        this.list = (E[])new Object[this.size];
     }
 
-    private T[] grow() {
-        T[] temp = new T[this.size*2];
-        for (i = 0; i < this.length; i++) {
+    Arraylist(int initialCapacity) {
+        this.size = initialCapacity;
+        this.list = (E[])new Object[this.size];
+    }
+
+    private void rangeCheckForAdd(int index) {
+        if (index > this.size || index < 0) {
+            throw new IndexOutOfBoundsException("Index out of Bounds. ArraySize: " + String.valueOf(this.size));
+        }
+    }
+
+    private E[] grow() {
+        E[] temp = (E[])new Object[this.size*2];
+        for (int i = 0; i < this.length; i++) {
             temp[i] = this.list[i];
         }
         return temp;
     }
 
-    private void add(T element, int position) {
+    private void add(E element, int position) {
         if (this.length >= this.size) {
-            this.list = grow();
+            this.list = this.grow();
             this.size = this.size * 2;
         }
         this.list[position] = element;
     }
 
-    public boolean add(T element) {
+    public void add(E element) {
         this.add(element, this.length);
         this.length++;
-        return true;
     }
 
-    public boolean add(T element, int position) {
-        if (position > this.length) {
-            return false;
-        }
-        this.add(element, position);
-        return true;
+    public void add(int index, E element) {
+        this.rangeCheckForAdd(index);
+        this.list[index] = element;
+        this.length++;
     }
 }
