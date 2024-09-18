@@ -16,7 +16,7 @@ public class Arraylist<E> {
         this.list = (E[])new Object[this.size];
     }
 
-    private void rangeCheckForAdd(int index) {
+    private void rangeCheck(int index) {
         if (index > this.size || index < 0) {
             throw new IndexOutOfBoundsException("Index out of Bounds. ArraySize: " + String.valueOf(this.size));
         }
@@ -44,8 +44,67 @@ public class Arraylist<E> {
     }
 
     public void add(int index, E element) {
-        this.rangeCheckForAdd(index);
+        this.rangeCheck(index);
         this.list[index] = element;
         this.length++;
+    }
+
+    private void shiftRemoval(int index) {
+        for(int i = index; i <= this.length-1; i++) {
+            this.list[i] = this.list[i+1];
+        }
+        this.length--;
+    }
+    
+    public int indexOf(E element) {
+        int index = -1;
+
+        if (this.contains(element)) {
+            for(int i = 0; i <= this.length; i++) {
+                if (this.list[i].equals(element)) {
+                    index = i;
+                }
+            }
+        }
+
+        return index;
+    }
+
+    public void remove(int index) {
+        this.shiftRemoval(index);
+    }
+
+    public void remove(E element) {
+        int index = this.indexOf(element);
+
+        if (index != -1) {
+            this.shiftRemoval(index);
+        }
+    }
+
+    public E get(int index) {
+        this.rangeCheck(index);
+        return this.list[index];
+    }
+
+    public void clear() {
+        for(int i = 0; i <= this.length; i++) {
+            this.list[i] = null;
+        }
+    }
+
+    public boolean contains(E element) {
+        boolean in = false;
+        for(int i = 0; i <= this.length; i++) {
+            if (this.list[i].equals(element)) {
+                in = true;
+            }
+        }
+
+        return in;
+    }
+
+    public int size() {
+        return this.length;
     }
 }
