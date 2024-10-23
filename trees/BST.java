@@ -107,7 +107,7 @@ public class BST<T> {
                 else 
                     node.parent.right = node.left;
             }
-            // Node has two children. Replace with min Value of the left
+            // Node has two children. Replace with min Value of the right
             else {
                 Node replace = this.removeMin(node.right);
                 node.value = replace.value;
