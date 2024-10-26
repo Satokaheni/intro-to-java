@@ -71,41 +71,29 @@ public class BST<T> {
 
     public void remove(T value) {
         if(this.contains(value)) {
-            this.remove(T value, this.root);
+            this. root = this.remove(T value, this.root);
         }
     }
 
-    private void remove(T value, Node node) {
+    private Node remove(T value, Node node) {
         // returns -1 then node value is less go right
         if(node.value.compareTo(value) < 0) {
-            return contains(value, node.right);
+            node.right = remove(value, node.right);
         }
         // return 1 then node value is greater go left
         else if(node.value.compareTo(value) > 0) {
-            return contains(value, node.left);
+            node.left = remove(value, node.left);
         } 
         // Values are equal{
         else{
             // Node has no children
             if(node.left == null && node.right == null){
                 // check if node was left or right child
-                if(node.parent.left.equals(value))
-                    node.parent.left = null
-                else 
-                    node.parent.right = null;
+                node = null;
             }
             // Node has one child
-            else if(node.left == null) {
-                if(node.parent.left.equals(value))
-                    node.parent.left = node.right
-                else 
-                    node.parent.right = node.right;
-            }
-            else if (node.right == null) {
-                if(node.parent.left.equals(value))
-                    node.parent.left = node.left;
-                else 
-                    node.parent.right = node.left;
+            else if(node.left == null || node.right == null) {
+                node = node.left == null ? node.right : node.left;
             }
             // Node has two children. Replace with min Value of the right
             else {
@@ -114,6 +102,8 @@ public class BST<T> {
                 this.remove(node.value, replace);
             }
         }
+
+        return node;
     }
 
     private Node removeMin(Node node) {
