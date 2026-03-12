@@ -1,6 +1,6 @@
 package sorting;
 
-public class Sorting {
+public class Sorting<T extends Comparable<T>> {
     public T[] insertionSort(T[] array) {
         for(int i = 1; i < array.length; i++) {
             T element = (T)array[i];
@@ -32,8 +32,8 @@ public class Sorting {
         return array;
     }
 
-    private T getPivot(int low, int middle, int high, T[] array) {
-        if((array[low].comapreTo(array[middle]) < 0 && array[low].compareTo(array[high]) > 0) || (array[low].comapreTo(array[middle]) > 0 && array[low].compareTo(array[high]) < 0)) {
+    private int getPivot(int low, int middle, int high, T[] array) {
+        if((array[low].compareTo(array[middle]) < 0 && array[low].compareTo(array[high]) > 0) || (array[low].compareTo(array[middle]) > 0 && array[low].compareTo(array[high]) < 0)) {
             return low;
         }
         else if ((array[middle].compareTo(array[low]) < 0 && array[middle].compareTo(array[high]) > 0) || (array[middle].compareTo(array[low]) > 0 && array[middle].compareTo(array[high]) < 0)) {
@@ -49,23 +49,37 @@ public class Sorting {
     }
 
     private T[] quickSortHelper(T[] array, int low, int high) {
-        int middle = low + (high-low)/2
+        if (low >= high) {
+            return array;
+        }
+
+        int middle = low + (high-low)/2;
 
         int pivot = getPivot(low, middle, high, array);
 
-        // split into two parts and move pivot
-        /*
-         * 
-         * 
-         *  Your Code Here
-         * 
-         * 
-         */
+        array = elementSwap(array, high, pivot);
+        pivot = high;
+        int i = low; int j = high-1;
 
-        while(array[pivot] < array[pivot-1] && pivot > low) {
-            T temp = array[pivot];
-            array[pivot] = array[pivot-1];
-            array[pivot-1] = temp;
+        while(i < j) {
+            if (array[i].compareTo(array[pivot]) > 0 && array[j].compareTo(array[pivot]) < 0) {
+                array = elementSwap(array, i, j);
+                i++;
+                j--;
+            }
+            else {
+                if (array[i].compareTo(array[pivot]) < 0)
+                    i++;
+                if (array[j].compareTo(array[pivot]) > 0)
+                    j--;
+            }
+        }
+
+        array = quickSortHelper(array, low, j);
+        array = quickSortHelper(array, j+1, high-1);
+
+        while(pivot > low && array[pivot].compareTo(array[pivot-1]) < 0) {
+            elementSwap(array, pivot, pivot-1);
             pivot--;
         }
 
@@ -86,7 +100,7 @@ public class Sorting {
 
         int index = 0;
         while(counter_left < left.length && counter_right < right.length) {
-            if (left[counter_left] < right[counter_left]) {
+            if (left[counter_left].compareTo(right[counter_right]) < 0) {
                 array[index] = left[counter_left];
                 counter_left++;
             }
@@ -103,7 +117,7 @@ public class Sorting {
             index++;
         }
 
-        while(counter_right > right.length) {
+        while(counter_right < right.length) {
             array[index] = right[counter_right];
             counter_right++;
             index++;
@@ -117,7 +131,7 @@ public class Sorting {
             return array;
         }
         else if(array.length == 2) {
-            if(array[0] > array[1]) {
+            if(array[0].compareTo(array[1]) > 0) {
                 elementSwap(array, 0, 1);
             }
             return array;
@@ -125,13 +139,13 @@ public class Sorting {
         else {
             int middle = (array.length)/2 - 1;
 
-            T[] left = new T[middle];
-            T[] right = new T[array.length-middle-1];
+            T[] left = (T[]) new Object[middle];
+            T[] right = (T[]) new Object[array.length-middle-1];
 
             for(int i = 0; i < array.length; i++) {
                 if (i < middle)
                     left[i] = array[i];
-                else 
+                else
                     right[i-middle] = array[i];
             }
 

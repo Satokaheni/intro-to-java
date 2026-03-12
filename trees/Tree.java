@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class Tree<T> {
 
     class Node {
         T value;
         Node parent;
-        ArrayList children = new ArrayList<Node>();
+        ArrayList<Node> children = new ArrayList<Node>();
 
         Node(T value) {
             this.value = value;
@@ -23,11 +27,11 @@ public class Tree<T> {
             this.root = new Node(value);
             return true;
         }
-        // Search 
+        // Search
         Node node = search(parent);
         // Check exists
         if (node != null) {
-            parent.children.insert(new Node(value));
+            node.children.add(new Node(value));
             return true;
         }
 
@@ -41,7 +45,7 @@ public class Tree<T> {
     private Node depthFirstSearch(Node searchNode, T value) {
         // Base Case One
         if (searchNode.value.equals(value)) {
-            return Node;
+            return searchNode;
         }
         // Base Case Two
         else if (searchNode.children.isEmpty()) {
@@ -52,7 +56,7 @@ public class Tree<T> {
             Node returnNode = null;
             for(int i = 0; i < searchNode.children.size(); i++) {
                 Node node = depthFirstSearch(searchNode.children.get(i), value);
-                returnNode = node != null: node ? returnNode;
+                returnNode = node != null ? node : returnNode;
             }
 
             return returnNode;
@@ -60,10 +64,10 @@ public class Tree<T> {
     }
 
     public Node breadthFirstSearch(T value) {
-        Queue q = new Queue<Node>();
+        Queue<Node> q = new LinkedList<>();
         q.add(this.root);
 
-        while (!q.peek() != null) {
+        while (q.peek() != null) {
             Node node = q.poll();
 
             if (node.value.equals(value)) {

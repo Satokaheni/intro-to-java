@@ -1,4 +1,4 @@
-public class BST<T> {
+public class BST<T extends Comparable<T>> {
     class Node {
         T value;
         Node left;
@@ -7,18 +7,30 @@ public class BST<T> {
 
         Node(T value, Node parent) {
             this.value = value;
+            this.parent = parent;
         }
     }
 
-    Node root;
+    private Node root;
 
     BST() {
         this.root = null;
     }
 
+    BST(T root) {
+        this.insert(root);
+    }
+
+    BST(T[] initial) {
+        for (int i = 0; i < initial.length; i++) {
+            this.insert(initial[i]);
+        }
+    }
+
     public void insert(T value) {
         if(this.root == null) {
             this.root = new Node(value, null);
+            return;
         }
 
         this.insert(value, this.root);
@@ -46,7 +58,7 @@ public class BST<T> {
     }
 
     public boolean contains(T value) {
-        return node.value.equals(value) ? true; contains(value, this.root);
+        return this.root.value.equals(value) ? true : contains(value, this.root);
     }
 
     private boolean contains(T value, Node node) {
@@ -61,17 +73,17 @@ public class BST<T> {
         // return 1 then node value is greater go left
         else if(node.value.compareTo(value) > 0) {
             return contains(value, node.left);
-        } 
-        // Values are equal{
+        }
+        // Values are equal
         else{
             return true;
         }
-        
+
     }
 
     public void remove(T value) {
         if(this.contains(value)) {
-            this. root = this.remove(T value, this.root);
+            this.root = this.remove(value, this.root);
         }
     }
 
@@ -83,12 +95,11 @@ public class BST<T> {
         // return 1 then node value is greater go left
         else if(node.value.compareTo(value) > 0) {
             node.left = remove(value, node.left);
-        } 
-        // Values are equal{
+        }
+        // Values are equal
         else{
             // Node has no children
             if(node.left == null && node.right == null){
-                // check if node was left or right child
                 node = null;
             }
             // Node has one child

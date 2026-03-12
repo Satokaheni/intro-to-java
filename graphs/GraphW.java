@@ -1,10 +1,10 @@
 import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.HashMap;
-import java.lang.Pair;
 
 public class GraphW<T> {
 
-    HashMap<T, ArrayList<Pair<T, int>>> edges = new HashMap<T, ArrayList<Pair<T, int>>>();
+    HashMap<T, ArrayList<AbstractMap.SimpleEntry<T, Double>>> edges = new HashMap<>();
 
     GraphW(Edge[] edges) {
         this.convertEdges(edges);
@@ -12,18 +12,18 @@ public class GraphW<T> {
 
     private void convertEdges(Edge[] edges) {
         for(int i = 0; i < edges.length; i++) {
-            T v1 = edges[i].vertex1;
-            T v2 = edges[i].vertex2;
+            T v1 = (T) edges[i].vertex1;
+            T v2 = (T) edges[i].vertex2;
             double cost = edges[i].cost;
 
             // Check if Key exist
-            if (!this.edges.containsKey(v1)) 
-                this.edges.put(v1, new ArrayList<Pair<T, int>>());
+            if (!this.edges.containsKey(v1))
+                this.edges.put(v1, new ArrayList<AbstractMap.SimpleEntry<T, Double>>());
             if (!this.edges.containsKey(v2))
-                this.edges.put(v2, new ArrayList<Pair<T, int>>());
+                this.edges.put(v2, new ArrayList<AbstractMap.SimpleEntry<T, Double>>());
 
-            this.edges.get(v1).add(new Pair(v2, cost));
-            this.edges.get(v2).add(new Pair(v1, cost));
+            this.edges.get(v1).add(new AbstractMap.SimpleEntry<>(v2, cost));
+            this.edges.get(v2).add(new AbstractMap.SimpleEntry<>(v1, cost));
         }
     }
 
@@ -35,11 +35,11 @@ public class GraphW<T> {
         return all;
     }
 
-    private T minVertex(HashMap<T, int> vertices, boolean[] known, double[] distance) {
+    private T minVertex(HashMap<T, Integer> vertices, boolean[] known, double[] distance) {
         T vertex = null;
-        int minDistance = Double.POSITIVE_INFINITY;
+        double minDistance = Double.POSITIVE_INFINITY;
 
-        for(T v: vertices.keySet().toArray()) {
+        for(T v: vertices.keySet()) {
             if (distance[vertices.get(v)] < minDistance && !known[vertices.get(v)]) {
                 vertex = v;
                 minDistance = distance[vertices.get(v)];
@@ -51,20 +51,20 @@ public class GraphW<T> {
     public void dijstras(T startVertex) {
 
         //set up
-        HashMap<T, int> vertices = new HashMap<T, int>();
-        T[] vert = this.edges.keySet().toArray();
-        for (int i = 0; i < vert.length; i++) {
-            vertices.put(vert[i], i);
+        HashMap<T, Integer> vertices = new HashMap<>();
+        int counter = 0;
+        for (T v : this.edges.keySet()) {
+            vertices.put(v, counter++);
         }
         boolean[] known = new boolean[vertices.size()];
         double[] distances = new double[vertices.size()];
         T[] previous = (T[])(new Object[vertices.size()]);
 
-        for(int = 0; i < vertices.size(); i++) {
+        for(int i = 0; i < vertices.size(); i++) {
             known[i] = false;
             distances[i] = Double.POSITIVE_INFINITY;
         }
-        
+
         T currentVertex = startVertex;
         known[vertices.get(startVertex)] = true;
         distances[vertices.get(startVertex)] = 0;
@@ -72,63 +72,21 @@ public class GraphW<T> {
         while(!allKnown(known)) {
 
             // update table
-            ArrayList<Pair<T, double>> currentEdges = this.edges.get(currentVertex)
+            ArrayList<AbstractMap.SimpleEntry<T, Double>> currentEdges = this.edges.get(currentVertex);
             for(int i = 0; i < currentEdges.size(); i++) {
                 T destination = currentEdges.get(i).getKey(); // vertex
                 double weight = currentEdges.get(i).getValue(); // cost
 
                 if (!known[vertices.get(destination)]) {
-                    if ((distance[vertices.get(currentVertex)] + weight) < distance[vertices.get(destination)]) {
-                        distances[vertices.get(destination)] = distance[vertices.get(startVertex)] + weight;
+                    if ((distances[vertices.get(currentVertex)] + weight) < distances[vertices.get(destination)]) {
+                        distances[vertices.get(destination)] = distances[vertices.get(currentVertex)] + weight;
                         previous[vertices.get(destination)] = currentVertex;
                     }
                 }
             }
 
             currentVertex = this.minVertex(vertices, known, distances);
-            known[vertice.get(currentVertex)] = true;
-        }
-    }
-
-    public void dijstras(T startVertex) {
-
-        //set up
-        HashMap<T, int> vertices = new HashMap<T, int>();
-        T[] vert = this.edges.keySet().toArray();
-        for (int i = 0; i < vert.length; i++) {
-            vertices.put(vert[i], i);
-        }
-        boolean[] known = new boolean[vertices.size()];
-        double[] distances = new double[vertices.size()];
-        T[] previous = (T[])(new Object[vertices.size()]);
-
-        for(int = 0; i < vertices.size(); i++) {
-            known[i] = false;
-            distances[i] = Double.POSITIVE_INFINITY;
-        }
-        
-        T currentVertex = startVertex;
-        known[vertices.get(startVertex)] = true;
-        distances[vertices.get(startVertex)] = 0;
-
-        while(!allKnown(known)) {
-
-            // update table
-            ArrayList<Pair<T, double>> currentEdges = this.edges.get(currentVertex)
-            for(int i = 0; i < currentEdges.size(); i++) {
-                T destination = currentEdges.get(i).getKey(); // vertex
-                double weight = currentEdges.get(i).getValue(); // cost
-
-                if (!known[vertices.get(destination)]) {
-                    if ((weight) < distance[vertices.get(destination)]) {
-                        distances[vertices.get(destination)] = weight;
-                        previous[vertices.get(destination)] = currentVertex;
-                    }
-                }
-            }
-
-            currentVertex = this.minVertex(vertices, known, distances);
-            known[vertice.get(currentVertex)] = true;
+            known[vertices.get(currentVertex)] = true;
         }
     }
 }

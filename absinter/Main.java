@@ -88,5 +88,6 @@ interface howToDrive {
 }
 
 class Car implements howToDrive {
-
+    public void shiftGear() {}
+    public void accelerate() {}
 }

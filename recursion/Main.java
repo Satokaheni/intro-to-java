@@ -61,7 +61,7 @@ public class Main {
             return array[0];
         } 
         else {
-            return array[index] + sum(array, index--);
+            return array[index] + sum(array, index - 1);
         }
     }
 
@@ -116,13 +116,13 @@ public class Main {
 
         //max left
         int current = 0;
-        for (int i = middle; i <= left; i--) {
+        for (int i = middle; i >= left; i--) {
             current = current + arr[i];
             max_left = Math.max(max_left, current);
         }
         //max right
         current = 0;
-        for (int i = middle+1; i >= right; i++) {
+        for (int i = middle+1; i <= right; i++) {
             current = current + arr[i];
             max_right = Math.max(max_right, current);
         }
