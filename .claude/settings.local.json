@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(javac heap/MaxHeap.java heap/MaxHeapTest.java)",
+      "Bash(java -ea -cp . heap.MaxHeapTest)"
     ]
   }
 }
